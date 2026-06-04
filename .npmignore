@@ -1,0 +1,6 @@
+src/
+tsconfig.json
+.gitignore
+.env
+.DS_Store
+.idea

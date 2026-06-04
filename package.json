@@ -1,0 +1,54 @@
+{
+  "name": "copilot-status-mcp",
+  "version": "0.1.0",
+  "description": "MCP server and CLI for retrieving GitHub Copilot quota, rate-limit windows, and reset times.",
+  "type": "module",
+  "main": "dist/mcp.js",
+  "bin": {
+    "copilot-status-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts --mcp",
+    "prepack": "npm run build",
+    "start": "node dist/cli.js --mcp",
+    "status": "tsx src/cli.ts",
+    "status:pretty": "tsx src/cli.ts --pretty",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "copilot",
+    "github-copilot",
+    "mcp",
+    "quota",
+    "rate-limit",
+    "usage"
+  ],
+  "author": "Dmytro Vakulenko",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DrSmile444/copilot-status-mcp.git"
+  },
+  "homepage": "https://github.com/DrSmile444/copilot-status-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/DrSmile444/copilot-status-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.19",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
