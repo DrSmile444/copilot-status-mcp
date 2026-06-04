@@ -30,19 +30,34 @@ export interface GhToken {
   source: "GITHUB_TOKEN env" | "gh-cli";
 }
 
-async function readAppsJson(): Promise<CopilotOAuthToken | undefined> {
-  const path = resolve(homedir(), ".config/github-copilot/apps.json");
-  try {
-    const raw = await readFile(path, "utf8");
-    const parsed = JSON.parse(raw) as Record<string, { oauth_token?: string; user?: string }>;
-    const entries = Object.values(parsed);
-    if (entries.length === 0) return undefined;
-    const entry = entries[0];
-    if (!entry.oauth_token) return undefined;
-    return { token: entry.oauth_token, source: "apps.json", user: entry.user };
-  } catch {
-    return undefined;
+function getAppsJsonPaths(): string[] {
+  if (process.platform === "win32") {
+    const paths: string[] = [];
+    if (process.env.LOCALAPPDATA) paths.push(resolve(process.env.LOCALAPPDATA, "github-copilot", "apps.json"));
+    if (process.env.APPDATA) {
+      paths.push(resolve(process.env.APPDATA, "GitHub Copilot", "apps.json"));
+      paths.push(resolve(process.env.APPDATA, "github-copilot", "apps.json"));
+    }
+    return paths;
   }
+  return [resolve(homedir(), ".config/github-copilot/apps.json")];
+}
+
+async function readAppsJson(): Promise<CopilotOAuthToken | undefined> {
+  for (const path of getAppsJsonPaths()) {
+    try {
+      const raw = await readFile(path, "utf8");
+      const parsed = JSON.parse(raw) as Record<string, { oauth_token?: string; user?: string }>;
+      const entries = Object.values(parsed);
+      if (entries.length === 0) continue;
+      const entry = entries[0];
+      if (!entry.oauth_token) continue;
+      return { token: entry.oauth_token, source: "apps.json", user: entry.user };
+    } catch {
+      // try next path
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -51,7 +66,7 @@ async function readAppsJson(): Promise<CopilotOAuthToken | undefined> {
  *
  * Resolution order:
  *   1. GITHUB_COPILOT_TOKEN env var
- *   2. ~/.config/github-copilot/apps.json  (JetBrains / Copilot CLI)
+ *   2. apps.json  (JetBrains / Copilot CLI — platform-specific path)
  */
 export async function getCopilotOAuthToken(): Promise<CopilotOAuthToken> {
   const envToken = process.env.GITHUB_COPILOT_TOKEN?.trim();
@@ -62,10 +77,14 @@ export async function getCopilotOAuthToken(): Promise<CopilotOAuthToken> {
   const fromApps = await readAppsJson();
   if (fromApps) return fromApps;
 
+  const appsJsonHint = process.platform === "win32"
+    ? "%LOCALAPPDATA%\\github-copilot\\apps.json"
+    : "~/.config/github-copilot/apps.json";
+
   throw new CredentialError(
     "No Copilot OAuth token found.\n" +
     "  Option 1: Set GITHUB_COPILOT_TOKEN env var\n" +
-    "  Option 2: Install JetBrains Copilot plugin (creates ~/.config/github-copilot/apps.json)\n" +
+    `  Option 2: Install JetBrains Copilot plugin (creates ${appsJsonHint})\n` +
     "  Option 3: Install GitHub Copilot CLI and run: npm install -g @github/copilot && copilot auth login",
   );
 }

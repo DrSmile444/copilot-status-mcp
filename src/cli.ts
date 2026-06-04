@@ -106,6 +106,10 @@ interface CliOptions {
 }
 
 function printHelp(): void {
+  const appsJsonPath = process.platform === "win32"
+    ? "%LOCALAPPDATA%\\github-copilot\\apps.json"
+    : "~/.config/github-copilot/apps.json";
+
   process.stdout.write(`copilot-status-mcp
 
 Fetch GitHub Copilot quota and rate-limit status, or run as an MCP stdio server.
@@ -124,11 +128,11 @@ Options:
 
 Token resolution (for short-term rate limit probe):
   1. GITHUB_COPILOT_TOKEN env var
-  2. ~/.config/github-copilot/apps.json  (JetBrains / Copilot CLI)
+  2. ${appsJsonPath}  (JetBrains / Copilot CLI)
 
 Token resolution (for monthly quota):
   1. GITHUB_COPILOT_TOKEN env var
-  2. ~/.config/github-copilot/apps.json
+  2. ${appsJsonPath}
   3. GITHUB_TOKEN env var
   4. \`gh auth token\`
 `);
