@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "description": "MCP server and CLI for retrieving GitHub Copilot quota, rate-limit windows, and reset times.",
   "type": "module",
-  "main": "dist/mcp.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./mcp": "./dist/mcp.js"
+  },
   "bin": {
     "copilot-status-mcp": "dist/cli.js"
   },

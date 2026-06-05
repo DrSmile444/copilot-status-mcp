@@ -48,6 +48,41 @@ What is my current Copilot quota?
 Am I rate limited on Copilot right now?
 ```
 
+## Programmatic Usage
+
+Install the package and import directly:
+
+```sh
+npm install copilot-status-mcp
+```
+
+```typescript
+import { getCopilotStatus } from "copilot-status-mcp";
+
+const result = await getCopilotStatus();
+console.log(result.shortTermRateLimit.rateLimited); // true or false
+console.log(result.shortTermRateLimit.sessionResetsAt); // ISO date if rate limited
+```
+
+With options:
+
+```typescript
+import { getCopilotStatus } from "copilot-status-mcp";
+
+const result = await getCopilotStatus({
+  timeoutMs: 30000,
+  includeLogin: true,
+});
+```
+
+The package exports:
+- `getCopilotStatus(options?)` — fetch current Copilot quota; returns `CopilotStatusResult`
+- `CopilotStatusError` — thrown when the CAPI probe or token exchange fails
+- `DEFAULT_TIMEOUT_MS` — default timeout (15 000 ms)
+- `getCopilotOAuthToken()` — resolve Copilot OAuth token only
+- `getGhToken()` — resolve a general GitHub token
+- `CredentialError` — thrown when no token can be found
+
 ## Requirements
 
 - Node.js 18 or newer.
