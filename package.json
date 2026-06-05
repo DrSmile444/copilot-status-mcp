@@ -1,6 +1,6 @@
 {
   "name": "copilot-status-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "MCP server and CLI for retrieving GitHub Copilot quota, rate-limit windows, and reset times.",
   "type": "module",
   "main": "dist/index.js",
