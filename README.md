@@ -322,6 +322,14 @@ Increase the timeout:
   headers. The response content is discarded.
 - GitHub login is omitted from output by default; use `--include-login` only when needed.
 
+## Related Packages
+
+These packages are part of the same family of AI provider status tools:
+
+- [claude-status-mcp](https://github.com/DrSmile444/claude-status-mcp) — Claude OAuth usage and rate-limit windows
+- [codex-status-mcp](https://github.com/DrSmile444/codex-status-mcp) — Codex / ChatGPT rate-limit windows and credits
+- [provider-status-mcp](https://github.com/DrSmile444/provider-status-mcp) — Aggregates Claude, Codex, and Copilot status into a single view
+
 ## License
 
 MIT
